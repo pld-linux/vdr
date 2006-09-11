@@ -1,10 +1,13 @@
+# TODO: License, optflags
+#
+# Conditional build:
 %bcond_with	sc	# softCAM support
 %bcond_without	xine	# xine support
-
+#
 %define		_sc_ver		0.5.9
 %define		_xine_ver	0.7.9
 Summary:	Video Disk Recorder
-Summary(pl):	Video Disk Recorder
+Summary(pl):	Video Disk Recorder - narzêdzie do nagrywania filmów
 Name:		vdr
 Version:	1.4.1
 Release:	0.1
@@ -20,10 +23,10 @@ URL:		http://www.cadsoft.de/vdr/
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Video Disk Recorder
+Video Disk Recorder.
 
 %description -l pl
-Video Disk Recorder
+Video Disk Recorder - narzêdzie do nagrywania filmów.
 
 %package sc
 Summary:	SoftCAM plugin for VDR
@@ -35,8 +38,8 @@ It's not legal to use this software in most countries of the world. SC
 means softcam, which means a software CAM emulation.
 
 %description sc -l pl
-U¿ywanie tego oprogramowania jest nielegalne we wiêkszo¶ci krajów
-¶wiata. SC znaczy softcam, co oznacza programowa emulacje CAM.
+U¿ywanie tego oprogramowania jest nielegalne w wiêkszo¶ci krajów
+¶wiata. SC znaczy softcam, co oznacza programow± emulacjê CAM.
 
 %package xine
 Summary:	xine plugin for VDR
@@ -44,27 +47,27 @@ Summary(pl):	Wtyczka xine dla VDR
 Group:		Libraries
 
 %description xine
-xine plugin for VDR
+xine plugin for VDR.
 
 %description xine -l pl
-Wtyczka xine dla VDR
+Wtyczka xine dla VDR.
 
 %prep
 %setup -q
 %patch0 -p1
 %if %{with sc}
-cd PLUGINS/src/
-/bin/gzip -dc %{SOURCE1} | tar -xf -
+cd PLUGINS/src
+gzip -dc %{SOURCE1} | tar -xf -
 mv sc* sc
-cd ../../
+cd ../..
 patch -p1 <PLUGINS/src/sc/patches/vdr-1.4.0-sc.diff
 %endif
 
 %if %{with xine}
-cd PLUGINS/src/
-/bin/gzip -dc %{SOURCE2} | tar -xf -
+cd PLUGINS/src
+gzip -dc %{SOURCE2} | tar -xf -
 mv xine* xine
-cd ../../
+cd ../..
 %endif
 
 %build
@@ -97,12 +100,12 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/vdr/plugins
 
 mv $RPM_BUILD_ROOT/var/lib/vdr/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/vdr
 cd $RPM_BUILD_ROOT
-ln -s %{_sysconfdir}/vdr/channels.conf var/lib/vdr/
-ln -s %{_sysconfdir}/vdr/diseqc.conf var/lib/vdr/
-ln -s %{_sysconfdir}/vdr/keymacros.conf var/lib/vdr/
-ln -s %{_sysconfdir}/vdr/sources.conf var/lib/vdr/
-ln -s %{_sysconfdir}/vdr/svdrphosts.conf var/lib/vdr/
-ln -s %{_sysconfdir}/vdr/plugins var/lib/vdr/
+ln -s %{_sysconfdir}/vdr/channels.conf var/lib/vdr
+ln -s %{_sysconfdir}/vdr/diseqc.conf var/lib/vdr
+ln -s %{_sysconfdir}/vdr/keymacros.conf var/lib/vdr
+ln -s %{_sysconfdir}/vdr/sources.conf var/lib/vdr
+ln -s %{_sysconfdir}/vdr/svdrphosts.conf var/lib/vdr
+ln -s %{_sysconfdir}/vdr/plugins var/lib/vdr
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -124,13 +127,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libvdr-svccli.so*
 %attr(755,root,root) %{_libdir}/libvdr-svcsvr.so*
 %attr(755,root,root) %{_libdir}/libvdr-svdrpdemo.so*
+# XXX: no such user; and is it proper group?
 %attr(755,video,video) /var/lib/%{name}
 %{_mandir}/*/*
 
 %if %{with sc}
 %files sc
 %defattr(644,root,root,755)
-%doc PLUGINS/src/sc/HISTORY PLUGINS/src/sc/README
+%doc PLUGINS/src/sc/{HISTORY,README}
 %attr(755,root,root) %{_libdir}/libsc*
 %attr(755,root,root) %{_libdir}/libvdr-sc.so*
 %endif
@@ -138,6 +142,6 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with xine}
 %files xine
 %defattr(644,root,root,755)
-%doc PLUGINS/src/xine/HISTORY PLUGINS/src/xine/MANUAL PLUGINS/src/xine/INSTALL PLUGINS/src/xine/README
+%doc PLUGINS/src/xine/{HISTORY,MANUAL,INSTALL,README}
 %attr(755,root,root) %{_libdir}/libvdr-xine.so*
 %endif
