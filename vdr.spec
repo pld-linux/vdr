@@ -7,7 +7,7 @@
 %define		_sc_ver		0.5.9
 %define		_xine_ver	0.7.9
 Summary:	Video Disk Recorder
-Summary(pl.UTF-8):   Video Disk Recorder - narzędzie do nagrywania filmów
+Summary(pl.UTF-8):	Video Disk Recorder - narzędzie do nagrywania filmów
 Name:		vdr
 Version:	1.4.1
 Release:	0.1
@@ -30,7 +30,7 @@ Video Disk Recorder - narzędzie do nagrywania filmów.
 
 %package sc
 Summary:	SoftCAM plugin for VDR
-Summary(pl.UTF-8):   Wtyczka SoftCAM dla VDR
+Summary(pl.UTF-8):	Wtyczka SoftCAM dla VDR
 Group:		Applications
 
 %description sc
@@ -43,7 +43,7 @@ Używanie tego oprogramowania jest nielegalne w większości krajów
 
 %package xine
 Summary:	xine plugin for VDR
-Summary(pl.UTF-8):   Wtyczka xine dla VDR
+Summary(pl.UTF-8):	Wtyczka xine dla VDR
 Group:		Libraries
 
 %description xine
