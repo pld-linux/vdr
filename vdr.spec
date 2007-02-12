@@ -7,7 +7,7 @@
 %define		_sc_ver		0.5.9
 %define		_xine_ver	0.7.9
 Summary:	Video Disk Recorder
-Summary(pl):	Video Disk Recorder - narzêdzie do nagrywania filmów
+Summary(pl.UTF-8):   Video Disk Recorder - narzÄ™dzie do nagrywania filmÃ³w
 Name:		vdr
 Version:	1.4.1
 Release:	0.1
@@ -25,31 +25,31 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Video Disk Recorder.
 
-%description -l pl
-Video Disk Recorder - narzêdzie do nagrywania filmów.
+%description -l pl.UTF-8
+Video Disk Recorder - narzÄ™dzie do nagrywania filmÃ³w.
 
 %package sc
 Summary:	SoftCAM plugin for VDR
-Summary(pl):	Wtyczka SoftCAM dla VDR
+Summary(pl.UTF-8):   Wtyczka SoftCAM dla VDR
 Group:		Applications
 
 %description sc
 It's not legal to use this software in most countries of the world. SC
 means softcam, which means a software CAM emulation.
 
-%description sc -l pl
-U¿ywanie tego oprogramowania jest nielegalne w wiêkszo¶ci krajów
-¶wiata. SC znaczy softcam, co oznacza programow± emulacjê CAM.
+%description sc -l pl.UTF-8
+UÅ¼ywanie tego oprogramowania jest nielegalne w wiÄ™kszoÅ›ci krajÃ³w
+Å›wiata. SC znaczy softcam, co oznacza programowÄ… emulacjÄ™ CAM.
 
 %package xine
 Summary:	xine plugin for VDR
-Summary(pl):	Wtyczka xine dla VDR
+Summary(pl.UTF-8):   Wtyczka xine dla VDR
 Group:		Libraries
 
 %description xine
 xine plugin for VDR.
 
-%description xine -l pl
+%description xine -l pl.UTF-8
 Wtyczka xine dla VDR.
 
 %prep
