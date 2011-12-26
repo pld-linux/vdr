@@ -1,26 +1,32 @@
-# TODO: License, optflags
 #
 # Conditional build:
 %bcond_with	sc	# softCAM support
-%bcond_without	xine	# xine support
+%bcond_with	xine	# xine support, requires patched xine-lib-devel
 #
-%define		_sc_ver		0.5.9
-%define		_xine_ver	0.7.9
+%define		_sc_ver		0.9.3
+%define		_xine_ver	0.9.4
 Summary:	Video Disk Recorder
 Summary(pl.UTF-8):	Video Disk Recorder - narzędzie do nagrywania filmów
 Name:		vdr
-Version:	1.4.1
-Release:	0.1
-License:	- (enter GPL/GPL v2/LGPL/BSD/BSD-like/other license name here)
-Group:		Applications
-Source0:	ftp://ftp.cadsoft.de/vdr/%{name}-%{version}.tar.bz2
-# Source0-md5:	f17ab7d185f3c5426cc713c2ad4cc708
+Version:	1.7.22
+Release:	1
+License:	GPL v2+
+Group:		X11/Applications/Multimedia
+Source0:	ftp://ftp.tvdr.de/vdr/Developer/%{name}-%{version}.tar.bz2
+# Source0-md5:	b9c0fe1aac8e653c0d0234bc72c2bb2c
 Source1:	http://207.44.152.197/%{name}-sc-%{_sc_ver}.tar.gz
-# Source1-md5:	cbd648dd4b7e9f8d08d86fc75a6681b0
+# Source1-md5:	d02d88213fcfb9b6c3f8c819eab4be68
 Source2:	http://home.vrweb.de/~rnissl/%{name}-xine-%{_xine_ver}.tgz
-Patch0:		%{name}-DESTDIR.patch
-URL:		http://www.cadsoft.de/vdr/
+# Source2-md5:	0374123d6991f55d91122b020361d8f6
+URL:		http://www.tvdr.de/
+BuildRequires:	fontconfig-devel
+BuildRequires:	fribidi-devel
+BuildRequires:	libjpeg-devel
+%{?with_xine:BuildRequires:	xine-lib-devel}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+# plugins use symbols provided by the binary
+%define		skip_post_check_so	.*%{_libdir}/vdr/libvdr-.*\.so\..*
 
 %description
 Video Disk Recorder.
@@ -54,94 +60,95 @@ Wtyczka xine dla VDR.
 
 %prep
 %setup -q
-%patch0 -p1
+%{__mv} svdrpsend.pl svdrpsend
+
+{ cd PLUGINS/src
+for plugin in * ; do
+	%{__mv} $plugin/HISTORY ../../HISTORY-$plugin
+	%{__mv} $plugin/README ../../README-$plugin
+done
+}
+
 %if %{with sc}
 cd PLUGINS/src
 gzip -dc %{SOURCE1} | tar -xf -
-mv sc* sc
+mv sc-%{_sc_ver} sc
 cd ../..
-patch -p1 <PLUGINS/src/sc/patches/vdr-1.4.0-sc.diff
+patch -p1 < PLUGINS/src/sc/patches/vdr-1.4.x-sc7.diff
 %endif
 
 %if %{with xine}
 cd PLUGINS/src
 gzip -dc %{SOURCE2} | tar -xf -
-mv xine* xine
+mv xine-%{_xine_ver} xine
 cd ../..
 %endif
 
 %build
 %{__make} \
-	BINDIR="%{_bindir}" \
-	MANDIR="%{_mandir}" \
+	CXXFLAGS="%{rpmcflags}" \
+	PREFIX="%{_prefix}" \
+	LOCDIR="%{_localedir}" \
+	CONFDIR="%{_sysconfdir}/%{name}" \
 	VIDEODIR=/var/lib/vdr \
-	PLUGINLIBDIR="%{_libdir}" \
+	PLUGINLIBDIR="%{_libdir}/%{name}" \
+	BIDI=1 \
 	REMOTE=LIRC
 
 %{__make} plugins \
-	BINDIR="%{_bindir}" \
-	MANDIR="%{_mandir}" \
-	VIDEODIR=/var/lib/vdr \
-	PLUGINLIBDIR="%{_libdir}" \
-	INCLUDES="-I../../../include -I/usr/include/ncurses" \
-	REMOTE=LIRC
+	CXXFLAGS="%{rpmcflags}" \
+	INCLUDES="-I../../../include -I/usr/include/ncurses"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/vdr
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/vdr/plugins
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/themes
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	BINDIR="%{_bindir}" \
-	MANDIR="%{_mandir}" \
+	PREFIX="%{_prefix}" \
+	LOCDIR="%{_localedir}" \
 	VIDEODIR=/var/lib/vdr \
-	PLUGINLIBDIR="%{_libdir}"
+	PLUGINLIBDIR="%{_libdir}/%{name}"
 
-mv $RPM_BUILD_ROOT/var/lib/vdr/*.conf $RPM_BUILD_ROOT%{_sysconfdir}/vdr
-cd $RPM_BUILD_ROOT
-ln -s %{_sysconfdir}/vdr/channels.conf var/lib/vdr
-ln -s %{_sysconfdir}/vdr/diseqc.conf var/lib/vdr
-ln -s %{_sysconfdir}/vdr/keymacros.conf var/lib/vdr
-ln -s %{_sysconfdir}/vdr/sources.conf var/lib/vdr
-ln -s %{_sysconfdir}/vdr/svdrphosts.conf var/lib/vdr
-ln -s %{_sysconfdir}/vdr/plugins var/lib/vdr
+cp -p *.conf{,.*} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
+
+%find_lang %{name} --all-name
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/ldconfig
-%postun	-p /sbin/ldconfig
-
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc epg2html.pl HISTORY INSTALL MANUAL PLUGINS.html README summary2info.pl svdrpsend.pl UPDATE-*
+%doc CONTRIBUTORS HISTORY* INSTALL MANUAL PLUGINS.html README README-* UPDATE-* epg2html summary2info
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/libvdr-hello.so*
-%attr(755,root,root) %{_libdir}/libvdr-osddemo.so*
-%attr(755,root,root) %{_libdir}/libvdr-skincurses.so*
-%attr(755,root,root) %{_libdir}/libvdr-sky.so*
-%attr(755,root,root) %{_libdir}/libvdr-status.so*
-%attr(755,root,root) %{_libdir}/libvdr-svccli.so*
-%attr(755,root,root) %{_libdir}/libvdr-svcsvr.so*
-%attr(755,root,root) %{_libdir}/libvdr-svdrpdemo.so*
-# XXX: no such user; and is it proper group?
-%attr(755,video,video) /var/lib/%{name}
-%{_mandir}/*/*
+%dir %{_sysconfdir}/%{name}/themes
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf*
+%attr(755,root,root) %{_bindir}/%{name}
+%attr(755,root,root) %{_bindir}/svdrpsend
+%attr(755,root,root) %{_libdir}/vdr/libvdr-dvbhddevice.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-dvbsddevice.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-hello.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-osddemo.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-pictures.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-skincurses.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-status.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-svccli.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-svcsvr.so.*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-svdrpdemo.so.*
+%attr(770,root,video) /var/lib/%{name}
+%{_mandir}/man*/%{name}.*
 
 %if %{with sc}
 %files sc
 %defattr(644,root,root,755)
 %doc PLUGINS/src/sc/{HISTORY,README}
 %attr(755,root,root) %{_libdir}/libsc*
-%attr(755,root,root) %{_libdir}/libvdr-sc.so*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-sc.so.*
 %endif
 
 %if %{with xine}
 %files xine
 %defattr(644,root,root,755)
 %doc PLUGINS/src/xine/{HISTORY,MANUAL,INSTALL,README}
-%attr(755,root,root) %{_libdir}/libvdr-xine.so*
+%attr(755,root,root) %{_libdir}/vdr/libvdr-xine.so.*
 %endif
