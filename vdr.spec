@@ -96,7 +96,7 @@ cd ../..
 	REMOTE=LIRC
 
 %{__make} plugins \
-	CXXFLAGS="%{rpmcflags}" \
+	CXXFLAGS="%{rpmcflags} -fPIC" \
 	INCLUDES="-I../../../include -I/usr/include/ncurses"
 
 %install
