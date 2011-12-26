@@ -9,7 +9,7 @@ Summary:	Video Disk Recorder
 Summary(pl.UTF-8):	Video Disk Recorder - narzędzie do nagrywania filmów
 Name:		vdr
 Version:	1.7.22
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	ftp://ftp.tvdr.de/vdr/Developer/%{name}-%{version}.tar.bz2
@@ -33,6 +33,18 @@ Video Disk Recorder.
 
 %description -l pl.UTF-8
 Video Disk Recorder - narzędzie do nagrywania filmów.
+
+%package devel
+Summary:	Header files for %{name}
+Summary(pl.UTF-8):	Pliki nagłówkowe %{name}
+Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+
+%description devel
+Header files for %{name}.
+
+%description devel -l pl.UTF-8
+Pliki nagłówkowe %{name}.
 
 %package sc
 Summary:	SoftCAM plugin for VDR
@@ -137,6 +149,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/vdr/libvdr-svdrpdemo.so.*
 %attr(770,root,video) /var/lib/%{name}
 %{_mandir}/man*/%{name}.*
+
+%files devel
+%defattr(644,root,root,755)
+%doc README.i18n
+%{_includedir}/libsi
+%{_includedir}/%{name}
+%{_pkgconfigdir}/%{name}.pc
 
 %if %{with sc}
 %files sc
