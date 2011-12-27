@@ -74,19 +74,19 @@ Wtyczka xine dla VDR.
 %setup -q
 %{__mv} svdrpsend.pl svdrpsend
 
-{ cd PLUGINS/src
-for plugin in * ; do
+cd PLUGINS/src
+for plugin in *; do
 	%{__mv} $plugin/HISTORY ../../HISTORY-$plugin
 	%{__mv} $plugin/README ../../README-$plugin
 done
-}
+cd ../..
 
 %if %{with sc}
 cd PLUGINS/src
 gzip -dc %{SOURCE1} | tar -xf -
 mv sc-%{_sc_ver} sc
 cd ../..
-patch -p1 < PLUGINS/src/sc/patches/vdr-1.4.x-sc7.diff
+%{__patch} -p1 < PLUGINS/src/sc/patches/vdr-1.4.x-sc7.diff
 %endif
 
 %if %{with xine}
