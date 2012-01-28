@@ -9,7 +9,7 @@ Summary:	Video Disk Recorder
 Summary(pl.UTF-8):	Video Disk Recorder - narzędzie do nagrywania filmów
 Name:		vdr
 Version:	1.7.22
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	ftp://ftp.tvdr.de/vdr/Developer/%{name}-%{version}.tar.bz2
@@ -98,6 +98,8 @@ cd ../..
 
 %build
 %{__make} \
+	CC="%{__cc}" \
+	CXX="%{__cxx}" \
 	CXXFLAGS="%{rpmcflags}" \
 	PREFIX="%{_prefix}" \
 	LOCDIR="%{_localedir}" \
@@ -108,6 +110,8 @@ cd ../..
 	REMOTE=LIRC
 
 %{__make} plugins \
+	CC="%{__cc}" \
+	CXX="%{__cxx}" \
 	CXXFLAGS="%{rpmcflags} -fPIC" \
 	INCLUDES="-I../../../include -I/usr/include/ncurses"
 
@@ -124,6 +128,13 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/themes
 
 cp -p *.conf{,.*} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
+# hack
+for langdir in $RPM_BUILD_ROOT%{_datadir}/locale/*_*; do
+	lang=$(basename $langdir)
+	newlang=$(echo "$lang" | sed -e 's#_.*##g')
+	mv $RPM_BUILD_ROOT%{_datadir}/locale/{$lang,$newlang}
+done
+
 %find_lang %{name} --all-name
 
 %clean
@@ -137,6 +148,7 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf*
 %attr(755,root,root) %{_bindir}/%{name}
 %attr(755,root,root) %{_bindir}/svdrpsend
+%dir %{_libdir}/vdr
 %attr(755,root,root) %{_libdir}/vdr/libvdr-dvbhddevice.so.*
 %attr(755,root,root) %{_libdir}/vdr/libvdr-dvbsddevice.so.*
 %attr(755,root,root) %{_libdir}/vdr/libvdr-hello.so.*
