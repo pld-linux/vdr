@@ -72,7 +72,6 @@ Wtyczka xine dla VDR.
 
 %prep
 %setup -q
-%{__mv} svdrpsend.pl svdrpsend
 
 cd PLUGINS/src
 for plugin in *; do
