@@ -8,12 +8,12 @@
 Summary:	Video Disk Recorder
 Summary(pl.UTF-8):	Video Disk Recorder - narzędzie do nagrywania filmów
 Name:		vdr
-Version:	1.7.22
-Release:	3
+Version:	1.7.23
+Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	ftp://ftp.tvdr.de/vdr/Developer/%{name}-%{version}.tar.bz2
-# Source0-md5:	b9c0fe1aac8e653c0d0234bc72c2bb2c
+# Source0-md5:	de136f7be28c4b6f1fa0e2218b4acc11
 Source1:	http://207.44.152.197/%{name}-sc-%{_sc_ver}.tar.gz
 # Source1-md5:	d02d88213fcfb9b6c3f8c819eab4be68
 Source2:	http://home.vrweb.de/~rnissl/%{name}-xine-%{_xine_ver}.tgz
@@ -117,7 +117,7 @@ cd ../..
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/themes
+install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{plugins,themes}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -143,9 +143,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc CONTRIBUTORS HISTORY* INSTALL MANUAL PLUGINS.html README README-* UPDATE-* epg2html summary2info
-%dir %{_sysconfdir}/%{name}
-%dir %{_sysconfdir}/%{name}/themes
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf*
+%attr(2775,root,video) %dir %{_sysconfdir}/%{name}
+%attr(2775,root,video) %dir %{_sysconfdir}/%{name}/plugins
+%attr(2775,root,video) %dir %{_sysconfdir}/%{name}/themes
+%attr(664,root,video) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/*.conf*
 %attr(755,root,root) %{_bindir}/%{name}
 %attr(755,root,root) %{_bindir}/svdrpsend
 %dir %{_libdir}/vdr
@@ -159,7 +160,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/vdr/libvdr-svccli.so.*
 %attr(755,root,root) %{_libdir}/vdr/libvdr-svcsvr.so.*
 %attr(755,root,root) %{_libdir}/vdr/libvdr-svdrpdemo.so.*
-%attr(770,root,video) /var/lib/%{name}
+%attr(2775,root,video) /var/lib/%{name}
 %{_mandir}/man*/%{name}.*
 
 %files devel
