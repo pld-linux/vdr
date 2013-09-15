@@ -1,0 +1,64 @@
+--- vdr-2.0.3/tools.c.orig	2012-12-08 12:16:30.000000000 +0100
++++ vdr-2.0.3/tools.c	2013-09-15 10:13:54.699139218 +0200
+@@ -1152,15 +1152,15 @@
+         }
+      else {
+         esyslog("ERROR: out of memory");
+-        return false;
++        return FALSE;
+         }
+      if (jcd->mem) {
+         cinfo->dest->next_output_byte = jcd->mem + Used;
+         cinfo->dest->free_in_buffer = jcd->size - Used;
+-        return true;
++        return TRUE;
+         }
+      }
+-  return false;
++  return FALSE;
+ }
+ 
+ static void JpegCompressTermDestination(j_compress_ptr cinfo)
+@@ -1205,8 +1205,8 @@
+   cinfo.in_color_space = JCS_RGB;
+ 
+   jpeg_set_defaults(&cinfo);
+-  jpeg_set_quality(&cinfo, Quality, true);
+-  jpeg_start_compress(&cinfo, true);
++  jpeg_set_quality(&cinfo, Quality, TRUE);
++  jpeg_start_compress(&cinfo, TRUE);
+ 
+   int rs = Width * 3;
+   JSAMPROW rp[Height];
+--- vdr-2.0.3/PLUGINS/src/dvbhddevice/dvbhdffdevice.c.orig	2013-04-11 10:41:16.000000000 +0200
++++ vdr-2.0.3/PLUGINS/src/dvbhddevice/dvbhdffdevice.c	2013-09-15 10:47:51.627168297 +0200
+@@ -1023,15 +1023,15 @@
+         }
+      else {
+         esyslog("ERROR: out of memory");
+-        return false;
++        return FALSE;
+         }
+      if (jcd->mem) {
+         cinfo->dest->next_output_byte = jcd->mem + Used;
+         cinfo->dest->free_in_buffer = jcd->size - Used;
+-        return true;
++        return TRUE;
+         }
+      }
+-  return false;
++  return FALSE;
+ }
+ 
+ static void JpegCompressTermDestination(j_compress_ptr cinfo)
+@@ -1076,8 +1076,8 @@
+   cinfo.in_color_space = JCS_YCbCr;
+ 
+   jpeg_set_defaults(&cinfo);
+-  jpeg_set_quality(&cinfo, Quality, true);
+-  jpeg_start_compress(&cinfo, true);
++  jpeg_set_quality(&cinfo, Quality, TRUE);
++  jpeg_start_compress(&cinfo, TRUE);
+ 
+   int rs = Width * 3;
+   JSAMPROW rp[Height];

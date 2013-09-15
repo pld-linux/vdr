@@ -18,6 +18,7 @@ Source1:	http://207.44.152.197/%{name}-sc-%{sc_ver}.tar.gz
 # Source1-md5:	d02d88213fcfb9b6c3f8c819eab4be68
 Source2:	http://home.vrweb.de/~rnissl/%{name}-xine-%{xine_ver}.tgz
 # Source2-md5:	0374123d6991f55d91122b020361d8f6
+Patch0:		%{name}-libjpeg.patch
 URL:		http://www.tvdr.de/
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 2
@@ -75,6 +76,7 @@ Wtyczka xine dla VDR.
 
 %prep
 %setup -q
+%patch0 -p1
 
 cd PLUGINS/src
 for plugin in *; do
@@ -107,7 +109,7 @@ cd ../..
 	LOCDIR="%{_localedir}" \
 	CONFDIR="%{_sysconfdir}/%{name}" \
 	VIDEODIR=/var/lib/vdr \
-	PLUGINLIBDIR="%{_libdir}/%{name}" \
+	LIBDIR="%{_libdir}/%{name}" \
 	BIDI=1 \
 	REMOTE=LIRC
 
@@ -126,7 +128,8 @@ install -d $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/{plugins,themes}
 	PREFIX="%{_prefix}" \
 	LOCDIR="%{_localedir}" \
 	VIDEODIR=/var/lib/vdr \
-	PLUGINLIBDIR="%{_libdir}/%{name}"
+	LIBDIR="%{_libdir}/%{name}" \
+	PCDIR=%{_pkgconfigdir}
 
 cp -p *.conf{,.*} $RPM_BUILD_ROOT%{_sysconfdir}/%{name}
 
