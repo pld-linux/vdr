@@ -8,12 +8,12 @@
 Summary:	Video Disk Recorder
 Summary(pl.UTF-8):	Video Disk Recorder - narzędzie do nagrywania filmów
 Name:		vdr
-Version:	2.0.3
+Version:	2.0.4
 Release:	1
 License:	GPL v2+
 Group:		X11/Applications/Multimedia
 Source0:	ftp://ftp.tvdr.de/vdr/%{name}-%{version}.tar.bz2
-# Source0-md5:	dd8fb1642bdfa7feb0e9a8ae41e9ef2f
+# Source0-md5:	8effb19fe09eb6c057ce354fe8f6be9f
 Source1:	http://207.44.152.197/%{name}-sc-%{sc_ver}.tar.gz
 # Source1-md5:	d02d88213fcfb9b6c3f8c819eab4be68
 Source2:	http://home.vrweb.de/~rnissl/%{name}-xine-%{xine_ver}.tgz
